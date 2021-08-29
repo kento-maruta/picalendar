@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_calendar/ui/Calendar.dart';
+import 'package:flutter_app_calendar/ui/searchList.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,8 +30,8 @@ class _HomePageState extends State<HomePage> {
   );
 
   static List<Widget> _pageList = [
-    CustomPage(pannelColor: Colors.cyan, title: '探す'),
-    CustomPage(pannelColor: Colors.green, title: 'カレンダー'),
+    SearchListPage(),
+    CalendarScreen(),
     CustomPage(pannelColor: Colors.pink, title: 'マイページ')
   ];
 
@@ -53,9 +55,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('カレンダー'),
-      ),
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
@@ -79,9 +78,7 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _selectedIndex,
         onTap: (index) {
           _selectedIndex = index;
-
-          _pageController.animateToPage(index,
-              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          _pageController.jumpToPage(index);
         },
       ),
     );
