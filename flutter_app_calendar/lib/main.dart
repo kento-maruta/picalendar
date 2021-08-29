@@ -22,23 +22,68 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // 表示中の Widget を取り出すための index としての int 型の mutable な stored property
   int _selectedIndex = 0;
+  PageController _pageController = PageController(
+    initialPage: 0,
+  );
 
-  // 表示する Widget の一覧
   static List<Widget> _pageList = [
-    CustomPage(pannelColor: Colors.cyan, title: 'Home'),
-    CustomPage(pannelColor: Colors.green, title: 'Settings'),
-    CustomPage(pannelColor: Colors.pink, title: 'Search')
+    CustomPage(pannelColor: Colors.cyan, title: '探す'),
+    CustomPage(pannelColor: Colors.green, title: 'カレンダー'),
+    CustomPage(pannelColor: Colors.pink, title: 'マイページ')
   ];
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('サンプル1'),
+        title: const Text('カレンダー'),
       ),
-      body: _pageList[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+        children: _pageList,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: "探す",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: "カレンダー",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.insert_emoticon),
+            label: "マイページ",
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          _selectedIndex = index;
+
+          _pageController.animateToPage(index,
+              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+        },
+      ),
     );
   }
 }
@@ -51,7 +96,7 @@ class CustomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleTextStyle = Theme.of(context).textTheme.title;
+    final titleTextStyle = Theme.of(context).textTheme.headline6!;
     return Container(
       child: Center(
         child: Container(
@@ -64,7 +109,7 @@ class CustomPage extends StatelessWidget {
             child: Text(
               title,
               style: TextStyle(
-                fontSize: titleTextStyle!.fontSize,
+                fontSize: titleTextStyle.fontSize,
                 color: titleTextStyle.color,
               ),
             ),
@@ -73,4 +118,4 @@ class CustomPage extends StatelessWidget {
       ),
     );
   }
-} // ナビゲーションバーをタップした時に切り替わるWidgetの定義
+}
